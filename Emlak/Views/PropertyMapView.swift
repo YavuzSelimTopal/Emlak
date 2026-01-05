@@ -24,34 +24,91 @@ struct PropertyMapView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
+            // MARK: - Map
             Map(position: $position) {
                 Annotation(property.address, coordinate: property.coordinate) {
-                    Image(systemName: "mappin.circle.fill")
-                        .font(.title)
+                    ZStack {
+                        Circle()
+                            .fill(Color.green)
+                            .frame(width: 34, height: 34)
+
+                        Image(systemName: "house.fill")
+                            .foregroundStyle(.white)
+                            .font(.system(size: 16, weight: .bold))
+                    }
+                    .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 4)
                 }
             }
-            .frame(height: 380)
+            .ignoresSafeArea(edges: .top)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text(property.address).font(.headline)
-                Text("\(property.price) ₺").font(.title3.weight(.semibold))
-
-                if !property.features.isEmpty {
-                    Text("Özellikler: " + property.features.joined(separator: ", "))
-                        .foregroundStyle(.secondary)
-                }
-
-                Text("Konum: \(property.latitude), \(property.longitude)")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(16)
-
-            Spacer()
+            // MARK: - Bottom Info Card
+            infoCard
         }
         .navigationTitle("Harita")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - Info Card
+private extension PropertyMapView {
+    var infoCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(property.address)
+                        .font(.headline)
+                        .lineLimit(2)
+
+                    Text("\(property.price) ₺")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Color.green)
+                }
+
+                Spacer()
+
+                Image(systemName: "map.fill")
+                    .foregroundStyle(Color.green.opacity(0.8))
+            }
+
+            if !property.features.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(property.features, id: \.self) { f in
+                            Text(f)
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(Color.green.opacity(0.9))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    Capsule(style: .continuous)
+                                        .fill(Color.green.opacity(0.12))
+                                )
+                                .overlay(
+                                    Capsule(style: .continuous)
+                                        .stroke(Color.green.opacity(0.25), lineWidth: 1)
+                                )
+                        }
+                    }
+                }
+            }
+
+            Text("Konum: \(property.latitude), \(property.longitude)")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.green.opacity(0.25), lineWidth: 1)
+        )
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
+        .shadow(color: .black.opacity(0.15), radius: 16, x: 0, y: 8)
     }
 }
 

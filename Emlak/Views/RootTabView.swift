@@ -11,7 +11,7 @@ struct RootTabView: View {
     var body: some View {
         TabView {
             HomeView()
-                .tabItem { Label("Home", systemImage: "house") }
+                .tabItem { Label("Home", systemImage: "house.fill") }
 
             SearchView()
                 .tabItem { Label("Ara", systemImage: "magnifyingglass") }
@@ -19,6 +19,9 @@ struct RootTabView: View {
             RecommendView()
                 .tabItem { Label("Öner", systemImage: "sparkles") }
         }
+        .tint(.green)
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarBackground(.ultraThinMaterial, for: .tabBar)
     }
 }
 
